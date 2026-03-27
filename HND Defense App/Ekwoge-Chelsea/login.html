@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FocusTrack</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <!-- Left Panel -->
+        <div class="auth-left">
+            <div class="auth-content">
+                <div class="auth-badge">Productivity starts here</div>
+                <h1>Welcome back.</h1>
+                <h2>Continue where you left off.</h2>
+                <p>Manage your tasks efficiently, track your progress, and achieve your goals with our comprehensive task management system. Stay organized and boost your productivity.</p>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h4>Complete 24 tasks this week</h4>
+                        <p>You're on fire! Keep up the great work and maintain your productivity streak.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel -->
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to access your workspace and continue managing your tasks.</p>
+                </div>
+                
+                <div id="errorMessages" class="error-messages" style="display: none;"></div>
+                
+                <form id="loginForm" class="auth-form" method="POST" action="login.php">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" name="email" class="input" placeholder="Enter your email address" required>
+                            <i class="bi bi-envelope input-icon-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" name="password" class="input" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <i class="bi bi-eye" id="password-toggle-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Sign In
+                        </button>
+                    </div>
+                    
+                    <div class="form-links">
+                        <a href="#" class="link">Forgot password?</a>
+                        <span>Don't have an account? <a href="signup.html" class="link">Sign Up</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleIcon = document.getElementById(fieldId + '-toggle-icon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('password', password);
+            
+            // Submit to login.php
+            fetch('login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.success) {
+                    window.location.href = data.redirect || 'dashboard.php';
+                    return;
+                }
+                showError((data && data.message) ? data.message : 'Invalid email or password. Please try again.');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Login failed. Please try again.');
+            });
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessages');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Hide error after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Check for login errors on page load
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                showError(decodeURIComponent(error));
+            }
+        });
+    </script>
+
+    <style>
+        /* Auth Body */
+        .auth-body {
+            margin: 0;
+            padding: 0;
+            font-family: Inter, system-ui, sans-serif;
+            background: #F5F7FB;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Left Panel */
+        .auth-left {
+            width: 55%;
+            background: #3B82F6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 80px;
+            color: white;
+            position: relative;
+        }
+
+        .auth-branding {
+            max-width: 480px;
+        }
+
+        .auth-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 32px;
+        }
+
+        .auth-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            line-height: 1.1;
+        }
+
+        .auth-subtitle {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 24px 0;
+            opacity: 0.9;
+            line-height: 1.2;
+        }
+
+        .auth-description {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0 0 48px 0;
+            opacity: 0.8;
+        }
+
+        .auth-feature {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .feature-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .feature-content p {
+            font-size: 14px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* Right Panel */
+        .auth-right {
+            width: 45%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .auth-form-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 8px 0;
+        }
+
+        .auth-header p {
+            font-size: 16px;
+            color: #6B7280;
+            margin: 0 0 16px 0;
+            line-height: 1.5;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input {
+            width: 100%;
+            height: 48px;
+            padding: 0 48px 0 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-icon-right {
+            position: absolute;
+            right: 16px;
+            color: #9CA3AF;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #9CA3AF;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: #3B82F6;
+        }
+
+        .form-actions {
+            margin-top: 4px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            color: #9CA3AF;
+            font-size: 18px;
+            z-index: 1;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #9CA3AF;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            color: #3B82F6;
+        }
+
+        .password-toggle i {
+            font-size: 18px;
+        }
+
+        .form-actions {
+            margin-top: 8px;
+        }
+
+        .btn-full {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563EB;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .form-links {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .link-forgot {
+            color: #3B82F6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .link-forgot:hover {
+            color: #2563EB;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .form-footer p {
+            color: #6B7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .link-signup {
+            color: #3B82F6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .link-signup:hover {
+            color: #2563EB;
+        }
+
+        /* Error Messages */
+        .error-messages {
+            background: #FEE2E2;
+            border: 1px solid #FCA5A5;
+            color: #DC2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .auth-left {
+                padding: 40px 60px;
+            }
+            
+            .auth-title {
+                font-size: 40px;
+            }
+            
+            .auth-subtitle {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+            }
+            
+            .auth-left {
+                width: 100%;
+                padding: 40px 24px;
+                min-height: auto;
+            }
+            
+            .auth-right {
+                width: 100%;
+                padding: 24px;
+                min-height: auto;
+            }
+            
+            .auth-title {
+                font-size: 32px;
+            }
+            
+            .auth-subtitle {
+                font-size: 20px;
+            }
+            
+            .auth-description {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-left {
+                padding: 32px 20px;
+            }
+            
+            .auth-right {
+                padding: 20px;
+            }
+            
+            .auth-title {
+                font-size: 28px;
+            }
+            
+            .form-title {
+                font-size: 28px;
+            }
+            
+            .auth-input {
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+        }
+    </style>
+</body>
+</html>

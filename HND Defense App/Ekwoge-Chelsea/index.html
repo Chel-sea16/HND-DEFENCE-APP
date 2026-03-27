@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Organize Your Tasks and Boost Your Productivity</title>
+    <link rel="stylesheet" href="landing/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="bi bi-check2-square"></i>
+                <span>TaskFlow</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How it Works</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn btn-secondary" onclick="window.location.href='login.html'">Login</button>
+                <button class="btn btn-primary" onclick="window.location.href='signup.html'">Sign Up</button>
+            </div>
+            
+            <button class="mobile-menu-toggle">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Organize Your Tasks and Boost Your Productivity</h1>
+                    <p>A simple and powerful task management app that helps you plan, track, and complete your daily goals with ease.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-large" onclick="window.location.href='signup.html'">Get Started</button>
+                        <button class="btn btn-outline btn-large" onclick="window.location.href='dashboard.html'">View Dashboard</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="landing/assets/images/dashboard-mockup.svg" alt="TaskFlow Dashboard">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Powerful Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Powerful Features to Keep You Organized</h2>
+                <p>Everything you need to manage your workflow perfectly.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+                    <h3>Smart Task Management</h3>
+                    <p>Create, organize, and prioritize your tasks with intelligent sorting and filtering options.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3>Today's Focus Mode</h3>
+                    <p>Stay focused on what matters most with our daily focus mode and productivity tracking.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-folder"></i>
+                    </div>
+                    <h3>Project Organization</h3>
+                    <p>Group related tasks into projects and track progress across multiple initiatives.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h3>Productivity Tracking</h3>
+                    <p>Monitor your productivity trends and celebrate your achievements with detailed analytics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- See TaskFlow in Action Section -->
+    <section class="showcase">
+        <div class="container">
+            <div class="section-header">
+                <h2>See TaskFlow in Action</h2>
+                <p>Beautifully designed interfaces that make productivity a joy.</p>
+            </div>
+            
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <img src="landing/assets/images/dashboard-preview-1.svg" alt="Dashboard Preview 1">
+                </div>
+                <div class="showcase-item">
+                    <img src="landing/assets/images/dashboard-preview-2.svg" alt="Dashboard Preview 2">
+                </div>
+                <div class="showcase-item">
+                    <img src="landing/assets/images/dashboard-preview-3.svg" alt="Dashboard Preview 3">
+                </div>
+                <div class="showcase-item">
+                    <img src="landing/assets/images/dashboard-preview-4.svg" alt="Dashboard Preview 4">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Get started and transform your workflow in three simple steps.</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                    <h3>Create</h3>
+                    <p>Add tasks quickly and easily with our intuitive interface</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="bi bi-grid-3x3"></i>
+                    </div>
+                    <h3>Organize</h3>
+                    <p>Group tasks into projects and set priorities for maximum efficiency</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <h3>Complete</h3>
+                    <p>Track your progress and celebrate your achievements</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Use This App Section -->
+    <section class="benefits">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Use This App?</h2>
+                <p>The benefits of adopting a structured productivity system.</p>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
+                    <h3>Stay Organized</h3>
+                    <p>Keep all your tasks and projects in one place</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="bi bi-rocket-takeoff"></i>
+                    </div>
+                    <h3>Increase Productivity</h3>
+                    <p>Accomplish more with smart task management</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="bi bi-emoji-smile"></i>
+                    </div>
+                    <h3>Reduce Stress</h3>
+                    <p>Never miss important deadlines again</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3>Focus on the Important</h3>
+                    <p>Prioritize what truly matters to you</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple and Transparent Pricing</h2>
+                <p>Choose the perfect plan for your productivity needs.</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Free Plan</h3>
+                        <div class="price">
+                            <span class="currency">$</span>
+                            <span class="amount">0</span>
+                            <span class="period">/ month</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="bi bi-check-lg"></i> Basic task management</li>
+                            <li><i class="bi bi-check-lg"></i> Create up to 50 tasks</li>
+                            <li><i class="bi bi-check-lg"></i> Task sharing</li>
+                            <li><i class="bi bi-check-lg"></i> Basic dashboard</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-action">
+                        <button class="btn btn-outline" onclick="window.location.href='signup-page.php'">Get Started</button>
+                    </div>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Pro Plan</h3>
+                        <div class="price">
+                            <span class="currency">$</span>
+                            <span class="amount">9</span>
+                            <span class="period">/ month</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="bi bi-check-lg"></i> Unlimited tasks</li>
+                            <li><i class="bi bi-check-lg"></i> Project templates</li>
+                            <li><i class="bi bi-check-lg"></i> Priority support</li>
+                            <li><i class="bi bi-check-lg"></i> Advanced productivity tracking</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-action">
+                        <button class="btn btn-primary" onclick="window.location.href='signup-page.php'">Get Started</button>
+                    </div>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Team Plan</h3>
+                        <div class="price">
+                            <span class="currency">$</span>
+                            <span class="amount">19</span>
+                            <span class="period">/ month</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="bi bi-check-lg"></i> Team collaboration</li>
+                            <li><i class="bi bi-check-lg"></i> Shared projects</li>
+                            <li><i class="bi bi-check-lg"></i> Team analytics</li>
+                            <li><i class="bi bi-check-lg"></i> Priority support</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-action">
+                        <button class="btn btn-outline" onclick="window.location.href='signup-page.php'">Get Started</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Start Organizing Your Tasks Today</h2>
+                <p>Join thousands of users improving their productivity.</p>
+                <button class="btn btn-primary btn-large" onclick="window.location.href='signup-page.php'">Create Free Account</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="bi bi-check2-square"></i>
+                        <span>TaskFlow</span>
+                    </div>
+                    <p>A simple and powerful task management app that helps you achieve more.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="#">Integrations</a></li>
+                            <li><a href="#">Updates</a></li>
+                            <li><a href="#">Roadmap</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Press</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Legal & Support</h4>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Community</a></li>
+                            <li><a href="#">System Status</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Newsletter Section -->
+            <div class="footer-newsletter">
+                <div class="container">
+                    <div class="newsletter-content">
+                        <div class="newsletter-text">
+                            <h3>Stay Updated</h3>
+                            <p>Subscribe to our newsletter to receive productivity tips and product updates.</p>
+                        </div>
+                        <div class="newsletter-form">
+                            <input type="email" placeholder="Enter your email" class="newsletter-input">
+                            <button class="btn btn-primary newsletter-btn">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Media Section -->
+            <div class="footer-social">
+                <div class="container">
+                    <div class="social-icons">
+                        <a href="#" class="social-icon" title="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="social-icon" title="Twitter">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon" title="LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-icon" title="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon" title="GitHub">
+                            <i class="bi bi-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 TaskFlow</p>
+                <p>A simple and powerful task management app that helps you achieve more every day.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing/script.js"></script>
+</body>
+</html>

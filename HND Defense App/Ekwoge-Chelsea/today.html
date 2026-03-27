@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today - FocusTrack</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar (Desktop) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="bi bi-bullseye"></i>
+                    <span>FocusTrack</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                    <i class="bi bi-bullseye"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="my-tasks.html" class="nav-item" data-page="my-tasks">
+                    <i class="bi bi-check2-square"></i>
+                    <span>My Task</span>
+                </a>
+                <a href="today.html" class="nav-item active" data-page="today">
+                    <i class="bi bi-calendar-day"></i>
+                    <span>Today</span>
+                </a>
+                <a href="projects.html" class="nav-item" data-page="projects">
+                    <i class="bi bi-kanban"></i>
+                    <span>Project</span>
+                </a>
+                <a href="profile.html" class="nav-item" data-page="profile">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Top Navbar -->
+        <nav class="navbar">
+            <div class="navbar-actions">
+                <a href="#" class="navbar-icon" title="Notifications">
+                    <i class="bi bi-bell"></i>
+                </a>
+                <div class="user-avatar" title="User Profile">
+                    <span>CU</span>
+                </div>
+                <a href="#" class="navbar-icon" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Today</h1>
+                        <p class="page-subtitle" id="todayDate">Loading...</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="window.location.href='create-task.html'">
+                        <i class="bi bi-plus-lg"></i>
+                        Add Task
+                    </button>
+                </div>
+
+                <!-- Today's Grid Layout -->
+                <div class="today-grid">
+                    <!-- Left Column: Schedule and Tasks -->
+                    <div class="left-column">
+                        <!-- Today's Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="bi bi-calendar-check"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="todayTotal">0</h3>
+                                    <p>Total Tasks</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="bi bi-hourglass-split"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="todayPending">0</h3>
+                                    <p>Pending</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="todayInProgress">0</h3>
+                                    <p>In Progress</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="todayCompleted">0</h3>
+                                    <p>Completed</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Tasks -->
+                        <div class="card">
+                            <div class="page-header">
+                                <h2 class="page-title">Today's Schedule</h2>
+                                <button class="btn btn-secondary" onclick="scrollToOverdue()">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    View Overdue
+                                </button>
+                            </div>
+                            
+                            <!-- Overdue Tasks -->
+                            <div class="task-section">
+                                <h3>
+                                    <i class="bi bi-exclamation-triangle" style="color: #B91C1C;"></i>
+                                    Overdue Tasks
+                                </h3>
+                                <div class="task-list" id="overdueTasks">
+                                    <div class="loading-spinner">
+                                        <i class="bi bi-hourglass-split"></i>
+                                        <p>Loading overdue tasks...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Due Today -->
+                            <div class="task-section">
+                                <h3>
+                                    <i class="bi bi-calendar-day" style="color: #D97706;"></i>
+                                    Due Today
+                                </h3>
+                                <div class="task-list" id="dueTodayTasks">
+                                    <div class="loading-spinner">
+                                        <i class="bi bi-hourglass-split"></i>
+                                        <p>Loading today's tasks...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upcoming -->
+                            <div class="task-section">
+                                <h3>
+                                    <i class="bi bi-clock" style="color: #3B82F6;"></i>
+                                    Upcoming
+                                </h3>
+                                <div class="task-list" id="upcomingTasks">
+                                    <div class="loading-spinner">
+                                        <i class="bi bi-hourglass-split"></i>
+                                        <p>Loading upcoming tasks...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Focus Panel + Calendar -->
+                    <div class="right-column">
+                        <!-- Focus Panel -->
+                        <div class="card">
+                            <div class="page-header">
+                                <h2 class="page-title">Focus Mode</h2>
+                                <button class="btn-icon" title="Settings">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                            </div>
+                            <div class="focus-content">
+                                <div class="focus-timer">
+                                    <i class="bi bi-stopwatch"></i>
+                                    <span>25:00</span>
+                                </div>
+                                <p class="focus-description">Stay focused on your current task</p>
+                                <div class="focus-actions">
+                                    <button class="btn btn-primary">
+                                        <i class="bi bi-play-fill"></i>
+                                        Start Focus
+                                    </button>
+                                    <button class="btn btn-secondary">
+                                        <i class="bi bi-skip-forward"></i>
+                                        Skip Break
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mini Calendar -->
+                        <div class="card">
+                            <div class="page-header">
+                                <h2 class="page-title">March 2024</h2>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-icon" title="Previous Month">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Next Month">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mini-calendar">
+                                <div class="calendar-weekdays">
+                                    <span>S</span>
+                                    <span>M</span>
+                                    <span>T</span>
+                                    <span>W</span>
+                                    <span>T</span>
+                                    <span>F</span>
+                                    <span>S</span>
+                                </div>
+                                <div class="calendar-grid">
+                                    <!-- Calendar days would be generated here -->
+                                    <div class="calendar-day">1</div>
+                                    <div class="calendar-day">2</div>
+                                    <div class="calendar-day">3</div>
+                                    <div class="calendar-day">4</div>
+                                    <div class="calendar-day">5</div>
+                                    <div class="calendar-day">6</div>
+                                    <div class="calendar-day">7</div>
+                                    <div class="calendar-day">8</div>
+                                    <div class="calendar-day">9</div>
+                                    <div class="calendar-day">10</div>
+                                    <div class="calendar-day">11</div>
+                                    <div class="calendar-day">12</div>
+                                    <div class="calendar-day">13</div>
+                                    <div class="calendar-day">14</div>
+                                    <div class="calendar-day">15</div>
+                                    <div class="calendar-day">16</div>
+                                    <div class="calendar-day">17</div>
+                                    <div class="calendar-day">18</div>
+                                    <div class="calendar-day today">19</div>
+                                    <div class="calendar-day">20</div>
+                                    <div class="calendar-day">21</div>
+                                    <div class="calendar-day">22</div>
+                                    <div class="calendar-day">23</div>
+                                    <div class="calendar-day">24</div>
+                                    <div class="calendar-day">25</div>
+                                    <div class="calendar-day">26</div>
+                                    <div class="calendar-day">27</div>
+                                    <div class="calendar-day">28</div>
+                                    <div class="calendar-day">29</div>
+                                    <div class="calendar-day">30</div>
+                                    <div class="calendar-day">31</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <div class="mobile-nav">
+                <button class="hamburger" id="hamburger">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="mobile-logo">
+                    <i class="bi bi-calendar-day"></i>
+                    <span>Today</span>
+                </div>
+                <div class="mobile-user">
+                    <i class="bi bi-person"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav-footer">
+            <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                <i class="bi bi-bullseye"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="my-tasks.html" class="nav-item" data-page="my-tasks">
+                <i class="bi bi-check2-square"></i>
+                <span>My Task</span>
+            </a>
+            <a href="today.html" class="nav-item active" data-page="today">
+                <i class="bi bi-calendar-day"></i>
+                <span>Today</span>
+            </a>
+            <a href="projects.html" class="nav-item" data-page="projects">
+                <i class="bi bi-kanban"></i>
+                <span>Project</span>
+            </a>
+            <a href="profile.html" class="nav-item" data-page="profile">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTodayDate();
+            loadTodayTasks();
+        });
+
+        function setTodayDate() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = today.toLocaleDateString('en-US', options);
+            document.getElementById('todayDate').textContent = dateString;
+        }
+
+        function loadTodayTasks() {
+            // Sample tasks for demonstration
+            const today = new Date().toISOString().split('T')[0];
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+            const tasks = [
+                { id: 1, title: 'Complete project documentation', status: 'in-progress', priority: 'high', due_date: yesterday },
+                { id: 2, title: 'Team standup meeting', status: 'pending', priority: 'high', due_date: today },
+                { id: 3, title: 'Review pull requests', status: 'completed', priority: 'medium', due_date: today },
+                { id: 4, title: 'Update dependencies', status: 'pending', priority: 'low', due_date: today },
+                { id: 5, title: 'Design mobile mockups', status: 'pending', priority: 'high', due_date: tomorrow },
+                { id: 6, title: 'Setup CI/CD pipeline', status: 'in-progress', priority: 'medium', due_date: tomorrow }
+            ];
+
+            const overdue = tasks.filter(t => t.due_date < today && t.status !== 'completed');
+            const dueToday = tasks.filter(t => t.due_date === today);
+            const upcoming = tasks.filter(t => t.due_date > today && t.status !== 'completed');
+
+            displayTaskSection('overdueTasks', overdue);
+            displayTaskSection('dueTodayTasks', dueToday);
+            displayTaskSection('upcomingTasks', upcoming);
+
+            updateTodayStats(overdue, dueToday, upcoming);
+        }
+
+        function displayTaskSection(containerId, tasks) {
+            const container = document.getElementById(containerId);
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-check-circle"></i>
+                        <p>No tasks in this section</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tasks.map(task => `
+                <div class="task-item ${task.status === 'completed' ? 'completed' : ''}" data-task-id="${task.id}">
+                    <div class="task-checkbox ${task.status === 'completed' ? 'checked' : ''}" onclick="toggleTaskComplete(${task.id})">
+                        ${task.status === 'completed' ? '<i class="bi bi-check"></i>' : ''}
+                    </div>
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-meta">
+                            <span class="badge badge-${task.priority}">${formatPriority(task.priority)}</span>
+                            <span>
+                                <i class="bi bi-calendar"></i>
+                                ${formatDate(task.due_date)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateTodayStats(overdue, dueToday, upcoming) {
+            const allToday = [...overdue, ...dueToday, ...upcoming];
+            const total = allToday.length;
+            const pending = allToday.filter(t => t.status === 'pending').length;
+            const inProgress = allToday.filter(t => t.status === 'in-progress').length;
+            const completed = allToday.filter(t => t.status === 'completed').length;
+
+            document.getElementById('todayTotal').textContent = total;
+            document.getElementById('todayPending').textContent = pending;
+            document.getElementById('todayInProgress').textContent = inProgress;
+            document.getElementById('todayCompleted').textContent = completed;
+        }
+
+        function formatPriority(priority) {
+            const priorityMap = {
+                'high': 'High',
+                'medium': 'Medium',
+                'low': 'Low'
+            };
+            return priorityMap[priority] || priority;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const tomorrow = new Date(today.getTime() + 86400000);
+            
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === tomorrow.toDateString()) {
+                return 'Tomorrow';
+            } else {
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+        }
+
+        function toggleTaskComplete(taskId) {
+            console.log('Toggle task:', taskId);
+            // Toggle completion logic here
+        }
+
+        function scrollToOverdue() {
+            const overdueSection = document.getElementById('overdueTasks').closest('.task-section');
+            overdueSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+    <style>
+        .task-section {
+            margin-bottom: 32px;
+        }
+
+        .task-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+        }
+
+        .focus-content {
+            text-align: center;
+            padding: 24px 0;
+        }
+
+        .focus-timer {
+            font-size: 48px;
+            font-weight: 700;
+            color: #3B82F6;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .focus-description {
+            color: #6B7280;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .focus-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .mini-calendar {
+            padding: 16px 0;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #111827;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: #F3F4F6;
+        }
+
+        .calendar-day.today {
+            background: #3B82F6;
+            color: white;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .today-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .focus-timer {
+                font-size: 36px;
+            }
+
+            .focus-actions {
+                flex-direction: column;
+            }
+
+            .calendar-grid {
+                gap: 2px;
+            }
+
+            .calendar-day {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .focus-timer {
+                font-size: 32px;
+            }
+        }
+    </style>
+</body>
+</html>

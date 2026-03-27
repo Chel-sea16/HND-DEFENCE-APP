@@ -1,0 +1,29 @@
+<svg width="280" height="200" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="280" height="200" rx="12" fill="#ffffff"/>
+  <rect width="280" height="200" rx="12" fill="none" stroke="#e5e7eb" stroke-width="1"/>
+  
+  <!-- Header -->
+  <rect x="16" y="16" width="248" height="40" rx="8" fill="#f8fafc"/>
+  <text x="32" y="32" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Today's Focus</text>
+  <text x="32" y="48" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Prioritize your day</text>
+  
+  <!-- Focus timer -->
+  <circle cx="140" cy="90" r="30" fill="#eff6ff"/>
+  <circle cx="140" cy="90" r="25" fill="#ffffff"/>
+  <text x="140" y="88" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#3b82f6" text-anchor="middle">25:00</text>
+  <text x="140" y="100" font-family="Arial, sans-serif" font-size="8" fill="#6b7280" text-anchor="middle">Focus Time</text>
+  
+  <!-- Today's tasks -->
+  <rect x="16" y="130" width="248" height="54" rx="6" fill="#f8fafc"/>
+  <rect x="24" y="140" width="3" height="3" rx="1.5" fill="#3b82f6"/>
+  <text x="32" y="143" font-family="Arial, sans-serif" font-size="9" fill="#1a1a1a">Complete project proposal</text>
+  <text x="200" y="143" font-family="Arial, sans-serif" font-size="8" fill="#6b7280">2:00 PM</text>
+  
+  <rect x="24" y="154" width="3" height="3" rx="1.5" fill="#10b981"/>
+  <text x="32" y="157" font-family="Arial, sans-serif" font-size="9" fill="#1a1a1a">Team standup meeting</text>
+  <text x="200" y="157" font-family="Arial, sans-serif" font-size="8" fill="#6b7280">9:00 AM</text>
+  
+  <rect x="24" y="168" width="3" height="3" rx="1.5" fill="#6b7280"/>
+  <text x="32" y="171" font-family="Arial, sans-serif" font-size="9" fill="#1a1a1a">Review analytics</text>
+  <text x="200" y="171" font-family="Arial, sans-serif" font-size="8" fill="#6b7280">4:00 PM</text>
+</svg>

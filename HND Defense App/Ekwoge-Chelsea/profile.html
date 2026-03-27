@@ -1,0 +1,915 @@
+<?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.html");
+    exit();
+}
+
+// Get user data
+require_once 'php/db.php';
+$conn = getConnection();
+$stmt = $conn->prepare("SELECT first_name, last_name, email, profile_picture FROM users WHERE id = ?");
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+// Generate initials for avatar if no profile picture
+$initials = '';
+if (empty($user['profile_picture'])) {
+    $initials = strtoupper(substr($user['first_name'], 0, 1) ?? '' . substr($user['last_name'], 0, 1) ?? '');
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - FocusTrack</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .profile-container {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .profile-sidebar {
+            width: 320px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .profile-content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-avatar-section {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #3b82f6;
+        }
+
+        .profile-avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0 auto;
+            border: 3px solid #3b82f6;
+        }
+
+        .btn-change-avatar {
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            transform: translateX(50%);
+            background: #3b82f6;
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-change-avatar:hover {
+            background: #2563eb;
+            transform: translateX(50%) scale(1.1);
+        }
+
+        .profile-info h2 {
+            margin: 16px 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .profile-role {
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 0;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .profile-nav {
+            margin-top: 24px;
+        }
+
+        .profile-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            color: #6b7280;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .profile-nav .nav-item:hover {
+            background: #f3f4f6;
+            color: #3b82f6;
+        }
+
+        .profile-nav .nav-item.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .profile-nav .nav-item i {
+            font-size: 16px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .content-section h3 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-outline:hover {
+            background: #f3f4f6;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .preference-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .preference-info h4 {
+            margin: 0 0 4px 0;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .preference-info p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #d1d5db;
+            transition: .4s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #3b82f6;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .danger-zone {
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+            background: #fef2f2;
+        }
+
+        .danger-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+        }
+
+        .danger-item:not(:last-child) {
+            border-bottom: 1px solid #fecaca;
+        }
+
+        .danger-info h4 {
+            margin: 0 0 4px 0;
+            font-weight: 500;
+            color: #dc2626;
+        }
+
+        .danger-info p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification-success {
+            background: #10b981;
+        }
+
+        .notification-error {
+            background: #ef4444;
+        }
+
+        .notification-info {
+            background: #3b82f6;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px;
+            }
+
+            .profile-sidebar {
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preference-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .danger-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar (Desktop) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="bi bi-bullseye"></i>
+                    <span>FocusTrack</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="my-tasks.html" class="nav-item" data-page="my-tasks">
+                    <i class="bi bi-check2-square"></i>
+                    <span>My Tasks</span>
+                </a>
+                <a href="today.html" class="nav-item" data-page="today">
+                    <i class="bi bi-calendar-day"></i>
+                    <span>Today</span>
+                </a>
+                <a href="projects.html" class="nav-item" data-page="projects">
+                    <i class="bi bi-kanban"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="profile.html" class="nav-item active" data-page="profile">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Top Navbar -->
+        <nav class="navbar">
+            <div class="navbar-actions">
+                <a href="#" class="navbar-icon" title="Notifications">
+                    <i class="bi bi-bell"></i>
+                </a>
+                <div class="user-avatar" title="User Profile">
+                    <?php if (!empty($user['profile_picture'])): ?>
+                        <img src="uploads/profile/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="User">
+                    <?php else: ?>
+                        <div class="avatar-initials"><?php echo htmlspecialchars($initials); ?></div>
+                    <?php endif; ?>
+                </div>
+                <a href="logout.php" class="navbar-icon" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="profile-container">
+                <!-- Left Sidebar -->
+                <div class="profile-sidebar">
+                    <div class="profile-avatar-section">
+                        <?php if (!empty($user['profile_picture'])): ?>
+                            <img src="uploads/profile/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile" class="profile-avatar">
+                        <?php else: ?>
+                            <div class="profile-avatar-placeholder"><?php echo htmlspecialchars($initials); ?></div>
+                        <?php endif; ?>
+                        <button class="btn-change-avatar" onclick="document.getElementById('profilePictureInput').click()">
+                            <i class="bi bi-camera"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="profile-info">
+                        <h2><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h2>
+                        <p class="profile-role">Product Designer</p>
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <span class="stat-number">12</span>
+                                <span class="stat-label">Tasks</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">3</span>
+                                <span class="stat-label">Projects</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <nav class="profile-nav">
+                        <a href="#personal" class="nav-item active" data-section="personal">
+                            <i class="bi bi-person"></i>
+                            Personal Information
+                        </a>
+                        <a href="#security" class="nav-item" data-section="security">
+                            <i class="bi bi-shield-check"></i>
+                            Security
+                        </a>
+                        <a href="#preferences" class="nav-item" data-section="preferences">
+                            <i class="bi bi-gear"></i>
+                            Preferences
+                        </a>
+                        <a href="#danger" class="nav-item" data-section="danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Danger Zone
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Right Content -->
+                <div class="profile-content">
+                    <!-- Personal Information Section -->
+                    <div class="content-section active" id="personal">
+                        <h3>Personal Information</h3>
+                        <form class="profile-form" id="personalInfoForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" name="firstName" value="<?php echo htmlspecialchars($user['first_name']); ?>" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" name="lastName" value="<?php echo htmlspecialchars($user['last_name']); ?>" class="form-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio">Bio</label>
+                                <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself..." class="form-input"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-outline">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="content-section" id="security">
+                        <h3>Security</h3>
+                        <form class="profile-form" id="securityForm">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" name="currentPassword" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-input">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Update Password</button>
+                                <button type="button" class="btn btn-outline">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Preferences Section -->
+                    <div class="content-section" id="preferences">
+                        <h3>Preferences</h3>
+                        <div class="preferences-form">
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Email Notifications</h4>
+                                    <p>Receive email updates about your tasks and projects</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Dark Mode</h4>
+                                    <p>Use dark theme across the application</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Weekly Reports</h4>
+                                    <p>Get weekly summary of your productivity</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Task Reminders</h4>
+                                    <p>Receive notifications for upcoming deadlines</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone Section -->
+                    <div class="content-section" id="danger">
+                        <h3>Danger Zone</h3>
+                        <div class="danger-zone">
+                            <div class="danger-item">
+                                <div class="danger-info">
+                                    <h4>Delete Account</h4>
+                                    <p>Permanently delete your account and all associated data</p>
+                                </div>
+                                <button class="btn btn-danger">Delete Account</button>
+                            </div>
+                            <div class="danger-item">
+                                <div class="danger-info">
+                                    <h4>Export Data</h4>
+                                    <p>Download all your data in JSON format</p>
+                                </div>
+                                <button class="btn btn-outline">Export Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+
+    <script>
+        // Profile navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation handling
+            const navItems = document.querySelectorAll('.profile-nav .nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all nav items and sections
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    
+                    // Add active class to clicked nav item and corresponding section
+                    const targetSection = this.getAttribute('data-section');
+                    this.classList.add('active');
+                    document.getElementById(targetSection).classList.add('active');
+                });
+            });
+
+            // Personal Information Form
+            const personalInfoForm = document.getElementById('personalInfoForm');
+            if (personalInfoForm) {
+                personalInfoForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const data = {
+                        firstName: formData.get('firstName'),
+                        lastName: formData.get('lastName'),
+                        email: formData.get('email'),
+                        phone: formData.get('phone'),
+                        bio: formData.get('bio')
+                    };
+                    
+                    // Send update request
+                    fetch('api/update-profile.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            showNotification('Profile updated successfully!', 'success');
+                            // Update displayed name
+                            const nameElement = document.querySelector('.profile-info h2');
+                            if (nameElement) {
+                                nameElement.textContent = `${data.firstName} ${data.lastName}`;
+                            }
+                        } else {
+                            showNotification(result.message || 'Failed to update profile', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating profile:', error);
+                        showNotification('Failed to update profile', 'error');
+                    });
+                });
+            }
+
+            // Security Form (Password Change)
+            const securityForm = document.getElementById('securityForm');
+            if (securityForm) {
+                securityForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const currentPassword = formData.get('currentPassword');
+                    const newPassword = formData.get('newPassword');
+                    const confirmPassword = formData.get('confirmPassword');
+                    
+                    // Validation
+                    if (newPassword !== confirmPassword) {
+                        showNotification('New passwords do not match', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword.length < 6) {
+                        showNotification('Password must be at least 6 characters', 'error');
+                        return;
+                    }
+                    
+                    // Send password update request
+                    fetch('api/update-password.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            currentPassword: currentPassword,
+                            newPassword: newPassword
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            showNotification('Password updated successfully!', 'success');
+                            securityForm.reset();
+                        } else {
+                            showNotification(result.message || 'Failed to update password', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating password:', error);
+                        showNotification('Failed to update password', 'error');
+                    });
+                });
+            }
+
+            // Profile picture upload
+            const profilePictureInput = document.getElementById('profilePictureInput');
+            if (profilePictureInput) {
+                profilePictureInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('profile_picture', file);
+                        
+                        showNotification('Uploading profile picture...', 'info');
+                        
+                        fetch('api/upload-profile-picture.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification('Profile picture updated successfully!', 'success');
+                                
+                                // Update profile image
+                                const avatarImg = document.querySelector('.profile-avatar');
+                                const avatarPlaceholder = document.querySelector('.profile-avatar-placeholder');
+                                
+                                if (avatarImg) {
+                                    avatarImg.src = 'uploads/profile/' + data.profile_picture;
+                                } else if (avatarPlaceholder) {
+                                    // Replace placeholder with image
+                                    const newImg = document.createElement('img');
+                                    newImg.src = 'uploads/profile/' + data.profile_picture;
+                                    newImg.className = 'profile-avatar';
+                                    newImg.alt = 'Profile';
+                                    avatarPlaceholder.parentNode.replaceChild(newImg, avatarPlaceholder);
+                                }
+                                
+                                // Update navbar avatar
+                                const navbarAvatar = document.querySelector('.user-avatar img');
+                                if (navbarAvatar) {
+                                    navbarAvatar.src = 'uploads/profile/' + data.profile_picture;
+                                }
+                            } else {
+                                showNotification(data.message || 'Upload failed', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error uploading profile picture:', error);
+                            showNotification('Upload failed. Please try again.', 'error');
+                        });
+                    }
+                });
+            }
+
+            // Danger zone actions
+            const deleteAccountBtn = document.querySelector('.btn-danger');
+            if (deleteAccountBtn) {
+                deleteAccountBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                        if (confirm('This will permanently delete all your data. Are you absolutely sure?')) {
+                            fetch('api/delete-account.php', {
+                                method: 'POST'
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success) {
+                                    showNotification('Account deleted successfully', 'success');
+                                    setTimeout(() => {
+                                        window.location.href = 'signup.html';
+                                    }, 2000);
+                                } else {
+                                    showNotification(result.message || 'Failed to delete account', 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error deleting account:', error);
+                                showNotification('Failed to delete account', 'error');
+                            });
+                        }
+                    }
+                });
+            }
+
+            // Export data button
+            const exportBtn = document.querySelector('.btn-outline');
+            if (exportBtn && exportBtn.textContent.includes('Export Data')) {
+                exportBtn.addEventListener('click', function() {
+                    fetch('api/export-data.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Create and download JSON file
+                            const dataStr = JSON.stringify(data.data, null, 2);
+                            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                            const url = URL.createObjectURL(dataBlob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = 'focustrack-data-export.json';
+                            link.click();
+                            URL.revokeObjectURL(url);
+                            
+                            showNotification('Data exported successfully!', 'success');
+                        } else {
+                            showNotification('Failed to export data', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error exporting data:', error);
+                        showNotification('Failed to export data', 'error');
+                    });
+                });
+            }
+        });
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<svg width="280" height="200" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="280" height="200" rx="12" fill="#ffffff"/>
+  <rect width="280" height="200" rx="12" fill="none" stroke="#e5e7eb" stroke-width="1"/>
+  
+  <!-- Header -->
+  <rect x="16" y="16" width="248" height="40" rx="8" fill="#f8fafc"/>
+  <text x="32" y="32" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Analytics</text>
+  <text x="32" y="48" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Track your productivity</text>
+  
+  <!-- Chart area -->
+  <rect x="16" y="70" width="248" height="80" rx="6" fill="#f8fafc"/>
+  
+  <!-- Bar chart -->
+  <rect x="32" y="120" width="20" height="20" rx="2" fill="#3b82f6"/>
+  <rect x="60" y="110" width="20" height="30" rx="2" fill="#3b82f6"/>
+  <rect x="88" y="100" width="20" height="40" rx="2" fill="#3b82f6"/>
+  <rect x="116" y="105" width="20" height="35" rx="2" fill="#3b82f6"/>
+  <rect x="144" y="95" width="20" height="45" rx="2" fill="#10b981"/>
+  <rect x="172" y="90" width="20" height="50" rx="2" fill="#10b981"/>
+  <rect x="200" y="85" width="20" height="55" rx="2" fill="#10b981"/>
+  <rect x="228" y="80" width="20" height="60" rx="2" fill="#10b981"/>
+  
+  <!-- Stats -->
+  <rect x="16" y="160" width="80" height="24" rx="4" fill="#eff6ff"/>
+  <text x="24" y="172" font-family="Arial, sans-serif" font-size="8" fill="#6b7280">Avg. Daily:</text>
+  <text x="60" y="172" font-family="Arial, sans-serif" font-size="10" font-weight="600" fill="#3b82f6">8.5 tasks</text>
+  
+  <rect x="100" y="160" width="80" height="24" rx="4" fill="#f0fdf4"/>
+  <text x="108" y="172" font-family="Arial, sans-serif" font-size="8" fill="#6b7280">Completion:</text>
+  <text x="152" y="172" font-family="Arial, sans-serif" font-size="10" font-weight="600" fill="#10b981">87%</text>
+  
+  <rect x="184" y="160" width="80" height="24" rx="4" fill="#fef3c7"/>
+  <text x="192" y="172" font-family="Arial, sans-serif" font-size="8" fill="#6b7280">Streak:</text>
+  <text x="224" y="172" font-family="Arial, sans-serif" font-size="10" font-weight="600" fill="#f59e0b">12 days</text>
+</svg>
